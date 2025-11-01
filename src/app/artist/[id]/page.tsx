@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { Play, Heart, MoreHorizontal, User, Music } from "lucide-react";
 import Image from "next/image";
-import Header from "../../../components/Header";
-import Footer from "../../../components/Footer";
+import Header from "../../components/Header";
+import Footer from "../../components/Footer";
 import { useParams } from "next/navigation";
 
 interface Song {
@@ -25,59 +25,59 @@ interface Album {
 const ArtistPage = () => {
   const params = useParams();
   const artistId = params.id as string;
-  
+
   // Mock data for different artists based on ID
   const getArtistData = (id: string) => {
-    switch(id) {
-      case 'taylor-swift':
+    switch (id) {
+      case "taylor-swift":
         return {
-          id: 'taylor-swift',
+          id: "taylor-swift",
           name: "Taylor Swift",
           followers: "70.2M",
           monthlyListeners: "61.2M",
           image: "https://placehold.co/500x500/8b5cf6/white?text=TS",
           bio: "Taylor Alison Swift is an American singer-songwriter. Her work is characterized by narrative songs about her personal life, which has led to much public interest and media coverage.",
-          genres: ["Pop", "Country", "Alternative"]
+          genres: ["Pop", "Country", "Alternative"],
         };
-      case 'ed-sheeran':
+      case "ed-sheeran":
         return {
-          id: 'ed-sheeran',
+          id: "ed-sheeran",
           name: "Ed Sheeran",
           followers: "54.8M",
           monthlyListeners: "42.1M",
           image: "https://placehold.co/500x500/6366f1/white?text=ES",
           bio: "Edward Christopher Sheeran is an English singer-songwriter. He is known for his melodic folk-pop songs and hits like 'Shape of You' and 'Thinking Out Loud'.",
-          genres: ["Pop", "Folk", "Singer-Songwriter"]
+          genres: ["Pop", "Folk", "Singer-Songwriter"],
         };
-      case 'billie-eilish':
+      case "billie-eilish":
         return {
-          id: 'billie-eilish',
+          id: "billie-eilish",
           name: "Billie Eilish",
           followers: "32.1M",
           monthlyListeners: "28.9M",
           image: "https://placehold.co/500x500/10b981/white?text=BE",
           bio: "Billie Eilish Pirate Baird O'Connell is an American singer-songwriter. She is known for her musical stylings and haunting vocals that contrast with her young age.",
-          genres: ["Alternative", "Pop", "Electropop"]
+          genres: ["Alternative", "Pop", "Electropop"],
         };
-      case 'duulmn':
+      case "duulmn":
         return {
-          id: 'duulmn',
+          id: "duulmn",
           name: "Duul.mn Artists",
           followers: "1.2M",
           monthlyListeners: "850K",
           image: "https://placehold.co/500x500/ec4899/white?text=DU",
           bio: "Top Mongolian artists on Duul.mn - showcasing the best of Mongolian music and karaoke performances.",
-          genres: ["Mongolian", "Pop", "Folk"]
+          genres: ["Mongolian", "Pop", "Folk"],
         };
       default:
         return {
-          id: 'default',
+          id: "default",
           name: "Artist",
           followers: "0",
           monthlyListeners: "0",
           image: "https://placehold.co/500x500/000000/white?text=NA",
           bio: "Artist information not available.",
-          genres: ["Unknown"]
+          genres: ["Unknown"],
         };
     }
   };
@@ -89,127 +89,474 @@ const ArtistPage = () => {
   const [searchQuery] = useState("");
 
   // Get artist-specific data
-  const getArtistData = (id: string) => {
-    switch(id) {
-      case 'taylor-swift':
+  const getArtistDetailsData = (id: string) => {
+    switch (id) {
+      case "taylor-swift":
         return {
           topSongs: [
-            { id: 1, title: "Anti-Hero", album: "Midnights", duration: "3:20", cover: "https://placehold.co/60x60/ec4899/white?text=AH" },
-            { id: 2, title: "Shake It Off", album: "1989", duration: "3:39", cover: "https://placehold.co/60x60/6366f1/white?text=SI" },
-            { id: 3, title: "Love Story", album: "Fearless", duration: "3:55", cover: "https://placehold.co/60x60/06b6d4/white?text=LS" },
-            { id: 4, title: "You Belong With Me", album: "Fearless", duration: "3:50", cover: "https://placehold.co/60x60/10b981/white?text=YT" },
-            { id: 5, title: "Blank Space", album: "1989", duration: "3:51", cover: "https://placehold.co/60x60/f59e0b/white?text=BS" },
+            {
+              id: 1,
+              title: "Anti-Hero",
+              album: "Midnights",
+              duration: "3:20",
+              cover: "https://placehold.co/60x60/ec4899/white?text=AH",
+            },
+            {
+              id: 2,
+              title: "Shake It Off",
+              album: "1989",
+              duration: "3:39",
+              cover: "https://placehold.co/60x60/6366f1/white?text=SI",
+            },
+            {
+              id: 3,
+              title: "Love Story",
+              album: "Fearless",
+              duration: "3:55",
+              cover: "https://placehold.co/60x60/06b6d4/white?text=LS",
+            },
+            {
+              id: 4,
+              title: "You Belong With Me",
+              album: "Fearless",
+              duration: "3:50",
+              cover: "https://placehold.co/60x60/10b981/white?text=YT",
+            },
+            {
+              id: 5,
+              title: "Blank Space",
+              album: "1989",
+              duration: "3:51",
+              cover: "https://placehold.co/60x60/f59e0b/white?text=BS",
+            },
           ],
           albums: [
-            { id: 1, title: "Midnights", year: 2022, cover: "https://placehold.co/200x200/ec4899/white?text=MT" },
-            { id: 2, title: "1989", year: 2014, cover: "https://placehold.co/200x200/6366f1/white?text=19" },
-            { id: 3, title: "Red", year: 2012, cover: "https://placehold.co/200x200/ef4444/white?text=RD" },
-            { id: 4, title: "Fearless", year: 2008, cover: "https://placehold.co/200x200/10b981/white?text=FB" },
-            { id: 5, title: "Lover", year: 2019, cover: "https://placehold.co/200x200/f97316/white?text=LV" },
-            { id: 6, title: "Folklore", year: 2020, cover: "https://placehold.co/200x200/a855f7/white?text=FL" },
+            {
+              id: 1,
+              title: "Midnights",
+              year: 2022,
+              cover: "https://placehold.co/200x200/ec4899/white?text=MT",
+            },
+            {
+              id: 2,
+              title: "1989",
+              year: 2014,
+              cover: "https://placehold.co/200x200/6366f1/white?text=19",
+            },
+            {
+              id: 3,
+              title: "Red",
+              year: 2012,
+              cover: "https://placehold.co/200x200/ef4444/white?text=RD",
+            },
+            {
+              id: 4,
+              title: "Fearless",
+              year: 2008,
+              cover: "https://placehold.co/200x200/10b981/white?text=FB",
+            },
+            {
+              id: 5,
+              title: "Lover",
+              year: 2019,
+              cover: "https://placehold.co/200x200/f97316/white?text=LV",
+            },
+            {
+              id: 6,
+              title: "Folklore",
+              year: 2020,
+              cover: "https://placehold.co/200x200/a855f7/white?text=FL",
+            },
           ],
           relatedArtists: [
-            { id: 1, name: "Ariana Grande", image: "https://placehold.co/100x100/8b5cf6/white?text=AG" },
-            { id: 2, name: "Ed Sheeran", image: "https://placehold.co/100x100/6366f1/white?text=ES" },
-            { id: 3, name: "Katy Perry", image: "https://placehold.co/100x100/ec4899/white?text=KP" },
-            { id: 4, name: "Selena Gomez", image: "https://placehold.co/100x100/06b6d4/white?text=SG" },
-            { id: 5, name: "Billie Eilish", image: "https://placehold.co/100x100/10b981/white?text=BE" },
-            { id: 6, name: "Dua Lipa", image: "https://placehold.co/100x100/f59e0b/white?text=DL" },
-          ]
+            {
+              id: 1,
+              name: "Ariana Grande",
+              image: "https://placehold.co/100x100/8b5cf6/white?text=AG",
+            },
+            {
+              id: 2,
+              name: "Ed Sheeran",
+              image: "https://placehold.co/100x100/6366f1/white?text=ES",
+            },
+            {
+              id: 3,
+              name: "Katy Perry",
+              image: "https://placehold.co/100x100/ec4899/white?text=KP",
+            },
+            {
+              id: 4,
+              name: "Selena Gomez",
+              image: "https://placehold.co/100x100/06b6d4/white?text=SG",
+            },
+            {
+              id: 5,
+              name: "Billie Eilish",
+              image: "https://placehold.co/100x100/10b981/white?text=BE",
+            },
+            {
+              id: 6,
+              name: "Dua Lipa",
+              image: "https://placehold.co/100x100/f59e0b/white?text=DL",
+            },
+          ],
         };
-      case 'ed-sheeran':
+      case "ed-sheeran":
         return {
           topSongs: [
-            { id: 1, title: "Shape of You", album: "Divide", duration: "3:53", cover: "https://placehold.co/60x60/6366f1/white?text=SOE" },
-            { id: 2, title: "Perfect", album: "Divide", duration: "4:23", cover: "https://placehold.co/60x60/06b6d4/white?text=PER" },
-            { id: 3, title: "Thinking Out Loud", album: "X", duration: "4:41", cover: "https://placehold.co/60x60/10b981/white?text=TOL" },
-            { id: 4, title: "Castle on the Hill", album: "Divide", duration: "4:21", cover: "https://placehold.co/60x60/f59e0b/white?text=CTH" },
-            { id: 5, title: "Photograph", album: "X", duration: "4:17", cover: "https://placehold.co/60x60/ef4444/white?text=PHO" },
+            {
+              id: 1,
+              title: "Shape of You",
+              album: "Divide",
+              duration: "3:53",
+              cover: "https://placehold.co/60x60/6366f1/white?text=SOE",
+            },
+            {
+              id: 2,
+              title: "Perfect",
+              album: "Divide",
+              duration: "4:23",
+              cover: "https://placehold.co/60x60/06b6d4/white?text=PER",
+            },
+            {
+              id: 3,
+              title: "Thinking Out Loud",
+              album: "X",
+              duration: "4:41",
+              cover: "https://placehold.co/60x60/10b981/white?text=TOL",
+            },
+            {
+              id: 4,
+              title: "Castle on the Hill",
+              album: "Divide",
+              duration: "4:21",
+              cover: "https://placehold.co/60x60/f59e0b/white?text=CTH",
+            },
+            {
+              id: 5,
+              title: "Photograph",
+              album: "X",
+              duration: "4:17",
+              cover: "https://placehold.co/60x60/ef4444/white?text=PHO",
+            },
           ],
           albums: [
-            { id: 1, title: "Divide", year: 2017, cover: "https://placehold.co/200x200/6366f1/white?text=D" },
-            { id: 2, title: "Plus", year: 2011, cover: "https://placehold.co/200x200/06b6d4/white?text=+" },
-            { id: 3, title: "X", year: 2014, cover: "https://placehold.co/200x200/10b981/white?text=X" },
-            { id: 4, title: "Equals", year: 2021, cover: "https://placehold.co/200x200/f59e0b/white?text=EQ" },
-            { id: 5, title: "No.6 Collaborations Project", year: 2019, cover: "https://placehold.co/200x200/ec4899/white?text=NC" },
-            { id: 6, title: "Subtract", year: 2023, cover: "https://placehold.co/200x200/8b5cf6/white?text=SUB" },
+            {
+              id: 1,
+              title: "Divide",
+              year: 2017,
+              cover: "https://placehold.co/200x200/6366f1/white?text=D",
+            },
+            {
+              id: 2,
+              title: "Plus",
+              year: 2011,
+              cover: "https://placehold.co/200x200/06b6d4/white?text=+",
+            },
+            {
+              id: 3,
+              title: "X",
+              year: 2014,
+              cover: "https://placehold.co/200x200/10b981/white?text=X",
+            },
+            {
+              id: 4,
+              title: "Equals",
+              year: 2021,
+              cover: "https://placehold.co/200x200/f59e0b/white?text=EQ",
+            },
+            {
+              id: 5,
+              title: "No.6 Collaborations Project",
+              year: 2019,
+              cover: "https://placehold.co/200x200/ec4899/white?text=NC",
+            },
+            {
+              id: 6,
+              title: "Subtract",
+              year: 2023,
+              cover: "https://placehold.co/200x200/8b5cf6/white?text=SUB",
+            },
           ],
           relatedArtists: [
-            { id: 1, name: "George Ezra", image: "https://placehold.co/100x100/6366f1/white?text=GE" },
-            { id: 2, name: "James Bay", image: "https://placehold.co/100x100/06b6d4/white?text=JB" },
-            { id: 3, name: "Lewis Capaldi", image: "https://placehold.co/100x100/10b981/white?text=LC" },
-            { id: 4, name: "Shawn Mendes", image: "https://placehold.co/100x100/f59e0b/white?text=SM" },
-            { id: 5, name: "Charlie Puth", image: "https://placehold.co/100x100/ef4444/white?text=CP" },
-            { id: 6, name: "John Legend", image: "https://placehold.co/100x100/ec4899/white?text=JL" },
-          ]
+            {
+              id: 1,
+              name: "George Ezra",
+              image: "https://placehold.co/100x100/6366f1/white?text=GE",
+            },
+            {
+              id: 2,
+              name: "James Bay",
+              image: "https://placehold.co/100x100/06b6d4/white?text=JB",
+            },
+            {
+              id: 3,
+              name: "Lewis Capaldi",
+              image: "https://placehold.co/100x100/10b981/white?text=LC",
+            },
+            {
+              id: 4,
+              name: "Shawn Mendes",
+              image: "https://placehold.co/100x100/f59e0b/white?text=SM",
+            },
+            {
+              id: 5,
+              name: "Charlie Puth",
+              image: "https://placehold.co/100x100/ef4444/white?text=CP",
+            },
+            {
+              id: 6,
+              name: "John Legend",
+              image: "https://placehold.co/100x100/ec4899/white?text=JL",
+            },
+          ],
         };
-      case 'billie-eilish':
+      case "billie-eilish":
         return {
           topSongs: [
-            { id: 1, title: "bad guy", album: "When We All Fall Asleep", duration: "3:14", cover: "https://placehold.co/60x60/10b981/white?text=BG" },
-            { id: 2, title: "Therefore I Am", album: "Happier Than Ever", duration: "2:58", cover: "https://placehold.co/60x60/f59e0b/white?text=TIAM" },
-            { id: 3, title: "Everything I Wanted", album: "When We All Fall Asleep", duration: "4:05", cover: "https://placehold.co/60x60/ef4444/white?text=EIW" },
-            { id: 4, title: "Happier Than Ever", album: "Happier Than Ever", duration: "4:58", cover: "https://placehold.co/60x60/ec4899/white?text=HTE" },
-            { id: 5, title: "Ocean Eyes", album: "Don't Smile at Me", duration: "3:20", cover: "https://placehold.co/60x60/8b5cf6/white?text=OE" },
+            {
+              id: 1,
+              title: "bad guy",
+              album: "When We All Fall Asleep",
+              duration: "3:14",
+              cover: "https://placehold.co/60x60/10b981/white?text=BG",
+            },
+            {
+              id: 2,
+              title: "Therefore I Am",
+              album: "Happier Than Ever",
+              duration: "2:58",
+              cover: "https://placehold.co/60x60/f59e0b/white?text=TIAM",
+            },
+            {
+              id: 3,
+              title: "Everything I Wanted",
+              album: "When We All Fall Asleep",
+              duration: "4:05",
+              cover: "https://placehold.co/60x60/ef4444/white?text=EIW",
+            },
+            {
+              id: 4,
+              title: "Happier Than Ever",
+              album: "Happier Than Ever",
+              duration: "4:58",
+              cover: "https://placehold.co/60x60/ec4899/white?text=HTE",
+            },
+            {
+              id: 5,
+              title: "Ocean Eyes",
+              album: "Don't Smile at Me",
+              duration: "3:20",
+              cover: "https://placehold.co/60x60/8b5cf6/white?text=OE",
+            },
           ],
           albums: [
-            { id: 1, title: "Happier Than Ever", year: 2021, cover: "https://placehold.co/200x200/10b981/white?text=HTE" },
-            { id: 2, title: "When We All Fall Asleep", year: 2019, cover: "https://placehold.co/200x200/f59e0b/white?text=WWAFAS" },
-            { id: 3, title: "Don't Smile at Me", year: 2017, cover: "https://placehold.co/200x200/ef4444/white?text=DSAM" },
+            {
+              id: 1,
+              title: "Happier Than Ever",
+              year: 2021,
+              cover: "https://placehold.co/200x200/10b981/white?text=HTE",
+            },
+            {
+              id: 2,
+              title: "When We All Fall Asleep",
+              year: 2019,
+              cover: "https://placehold.co/200x200/f59e0b/white?text=WWAFAS",
+            },
+            {
+              id: 3,
+              title: "Don't Smile at Me",
+              year: 2017,
+              cover: "https://placehold.co/200x200/ef4444/white?text=DSAM",
+            },
           ],
           relatedArtists: [
-            { id: 1, name: "FINNEAS", image: "https://placehold.co/100x100/10b981/white?text=FN" },
-            { id: 2, name: "Clairo", image: "https://placehold.co/100x100/f59e0b/white?text=CL" },
-            { id: 3, name: "Rex Orange County", image: "https://placehold.co/100x100/ef4444/white?text=ROC" },
-            { id: 4, name: "Phoebe Bridgers", image: "https://placehold.co/100x100/ec4899/white?text=PB" },
-            { id: 5, name: "Tate McRae", image: "https://placehold.co/100x100/8b5cf6/white?text=TM" },
-            { id: 6, name: "Olivia Rodrigo", image: "https://placehold.co/100x100/06b6d4/white?text=OR" },
-          ]
+            {
+              id: 1,
+              name: "FINNEAS",
+              image: "https://placehold.co/100x100/10b981/white?text=FN",
+            },
+            {
+              id: 2,
+              name: "Clairo",
+              image: "https://placehold.co/100x100/f59e0b/white?text=CL",
+            },
+            {
+              id: 3,
+              name: "Rex Orange County",
+              image: "https://placehold.co/100x100/ef4444/white?text=ROC",
+            },
+            {
+              id: 4,
+              name: "Phoebe Bridgers",
+              image: "https://placehold.co/100x100/ec4899/white?text=PB",
+            },
+            {
+              id: 5,
+              name: "Tate McRae",
+              image: "https://placehold.co/100x100/8b5cf6/white?text=TM",
+            },
+            {
+              id: 6,
+              name: "Olivia Rodrigo",
+              image: "https://placehold.co/100x100/06b6d4/white?text=OR",
+            },
+          ],
         };
-      case 'duulmn':
+      case "duulmn":
         return {
           topSongs: [
-            { id: 1, title: "Хөх тэнгэр", album: "Classics", duration: "3:45", cover: "https://placehold.co/60x60/06b6d4/white?text=HT" },
-            { id: 2, title: "Зүүнбаян", album: "Traditional", duration: "4:12", cover: "https://placehold.co/60x60/10b981/white?text=ZB" },
-            { id: 3, title: "Модон чулуун", album: "Folk", duration: "3:28", cover: "https://placehold.co/60x60/f59e0b/white?text=MC" },
-            { id: 4, title: "Номин тэнгэр", album: "Mongolian Hits", duration: "4:01", cover: "https://placehold.co/60x60/ec4899/white?text=NT" },
-            { id: 5, title: "Бурхан шивээ", album: "Spiritual", duration: "5:15", cover: "https://placehold.co/60x60/8b5cf6/white?text=BS" },
+            {
+              id: 1,
+              title: "Хөх тэнгэр",
+              album: "Classics",
+              duration: "3:45",
+              cover: "https://placehold.co/60x60/06b6d4/white?text=HT",
+            },
+            {
+              id: 2,
+              title: "Зүүнбаян",
+              album: "Traditional",
+              duration: "4:12",
+              cover: "https://placehold.co/60x60/10b981/white?text=ZB",
+            },
+            {
+              id: 3,
+              title: "Модон чулуун",
+              album: "Folk",
+              duration: "3:28",
+              cover: "https://placehold.co/60x60/f59e0b/white?text=MC",
+            },
+            {
+              id: 4,
+              title: "Номин тэнгэр",
+              album: "Mongolian Hits",
+              duration: "4:01",
+              cover: "https://placehold.co/60x60/ec4899/white?text=NT",
+            },
+            {
+              id: 5,
+              title: "Бурхан шивээ",
+              album: "Spiritual",
+              duration: "5:15",
+              cover: "https://placehold.co/60x60/8b5cf6/white?text=BS",
+            },
           ],
           albums: [
-            { id: 1, title: "Mongolian Classics", year: 2020, cover: "https://placehold.co/200x200/06b6d4/white?text=MC" },
-            { id: 2, title: "Modern Mongolian", year: 2021, cover: "https://placehold.co/200x200/10b981/white?text=MM" },
-            { id: 3, title: "Traditional Melodies", year: 2019, cover: "https://placehold.co/200x200/f59e0b/white?text=TM" },
-            { id: 4, title: "Folk Revival", year: 2022, cover: "https://placehold.co/200x200/ec4899/white?text=FR" },
+            {
+              id: 1,
+              title: "Mongolian Classics",
+              year: 2020,
+              cover: "https://placehold.co/200x200/06b6d4/white?text=MC",
+            },
+            {
+              id: 2,
+              title: "Modern Mongolian",
+              year: 2021,
+              cover: "https://placehold.co/200x200/10b981/white?text=MM",
+            },
+            {
+              id: 3,
+              title: "Traditional Melodies",
+              year: 2019,
+              cover: "https://placehold.co/200x200/f59e0b/white?text=TM",
+            },
+            {
+              id: 4,
+              title: "Folk Revival",
+              year: 2022,
+              cover: "https://placehold.co/200x200/ec4899/white?text=FR",
+            },
           ],
           relatedArtists: [
-            { id: 1, name: "Бямбацогт", image: "https://placehold.co/100x100/06b6d4/white?text=BY" },
-            { id: 2, name: "Наранцэцэг", image: "https://placehold.co/100x100/10b981/white?text=NR" },
-            { id: 3, name: "Анхбаяр", image: "https://placehold.co/100x100/f59e0b/white?text=AB" },
-            { id: 4, name: "Болд", image: "https://placehold.co/100x100/ec4899/white?text=BL" },
-            { id: 5, name: "Цэцгээ", image: "https://placehold.co/100x100/8b5cf6/white?text=CE" },
-            { id: 6, name: "Энхжаргал", image: "https://placehold.co/100x100/ef4444/white?text=EN" },
-          ]
+            {
+              id: 1,
+              name: "Бямбацогт",
+              image: "https://placehold.co/100x100/06b6d4/white?text=BY",
+            },
+            {
+              id: 2,
+              name: "Наранцэцэг",
+              image: "https://placehold.co/100x100/10b981/white?text=NR",
+            },
+            {
+              id: 3,
+              name: "Анхбаяр",
+              image: "https://placehold.co/100x100/f59e0b/white?text=AB",
+            },
+            {
+              id: 4,
+              name: "Болд",
+              image: "https://placehold.co/100x100/ec4899/white?text=BL",
+            },
+            {
+              id: 5,
+              name: "Цэцгээ",
+              image: "https://placehold.co/100x100/8b5cf6/white?text=CE",
+            },
+            {
+              id: 6,
+              name: "Энхжаргал",
+              image: "https://placehold.co/100x100/ef4444/white?text=EN",
+            },
+          ],
         };
       default:
         return {
           topSongs: [
-            { id: 1, title: "Popular Song", album: "Album", duration: "3:30", cover: "https://placehold.co/60x60/6366f1/white?text=PS" },
-            { id: 2, title: "Hit Track", album: "Album", duration: "3:45", cover: "https://placehold.co/60x60/8b5cf6/white?text=HT" },
-            { id: 3, title: "Top Single", album: "Album", duration: "3:15", cover: "https://placehold.co/60x60/06b6d4/white?text=TS" },
+            {
+              id: 1,
+              title: "Popular Song",
+              album: "Album",
+              duration: "3:30",
+              cover: "https://placehold.co/60x60/6366f1/white?text=PS",
+            },
+            {
+              id: 2,
+              title: "Hit Track",
+              album: "Album",
+              duration: "3:45",
+              cover: "https://placehold.co/60x60/8b5cf6/white?text=HT",
+            },
+            {
+              id: 3,
+              title: "Top Single",
+              album: "Album",
+              duration: "3:15",
+              cover: "https://placehold.co/60x60/06b6d4/white?text=TS",
+            },
           ],
           albums: [
-            { id: 1, title: "Debut Album", year: 2020, cover: "https://placehold.co/200x200/6366f1/white?text=DA" },
-            { id: 2, title: "Second Album", year: 2022, cover: "https://placehold.co/200x200/8b5cf6/white?text=SA" },
+            {
+              id: 1,
+              title: "Debut Album",
+              year: 2020,
+              cover: "https://placehold.co/200x200/6366f1/white?text=DA",
+            },
+            {
+              id: 2,
+              title: "Second Album",
+              year: 2022,
+              cover: "https://placehold.co/200x200/8b5cf6/white?text=SA",
+            },
           ],
           relatedArtists: [
-            { id: 1, name: "Similar Artist 1", image: "https://placehold.co/100x100/6366f1/white?text=SA1" },
-            { id: 2, name: "Similar Artist 2", image: "https://placehold.co/100x100/8b5cf6/white?text=SA2" },
-          ]
+            {
+              id: 1,
+              name: "Similar Artist 1",
+              image: "https://placehold.co/100x100/6366f1/white?text=SA1",
+            },
+            {
+              id: 2,
+              name: "Similar Artist 2",
+              image: "https://placehold.co/100x100/8b5cf6/white?text=SA2",
+            },
+          ],
         };
     }
   };
 
-  const { topSongs, albums, relatedArtists } = getArtistData(artistId);
+  const { topSongs, albums, relatedArtists } = getArtistDetailsData(artistId);
 
   return (
     <div className="min-h-screen bg-linear-to-b from-gray-900 to-black text-white">
