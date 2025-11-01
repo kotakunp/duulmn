@@ -1,65 +1,190 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import { useState } from "react";
+import { Search, Play, Crown } from "lucide-react";
+import Header from "./components/Header";
+import HeroSection from "./components/HeroSection";
+import FeaturedPlaylists from "./components/FeaturedPlaylists";
+import CommunitySection from "./components/CommunitySection";
+import PremiumSection from "./components/PremiumSection";
+import Footer from "./components/Footer";
+
+const App = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [showMiniPlayer, setShowMiniPlayer] = useState(false);
+
+  // Mock data
+  const featuredPlaylists = {
+    trending: [
+      {
+        id: 1,
+        title: "Dancing Queen",
+        artist: "ABBA",
+        cover: "https://placehold.co/300x300/6366f1/white?text=ABBA",
+      },
+      {
+        id: 2,
+        title: "Bohemian Rhapsody",
+        artist: "Queen",
+        cover: "https://placehold.co/300x300/8b5cf6/white?text=Queen",
+      },
+      {
+        id: 3,
+        title: "Sweet Caroline",
+        artist: "Neil Diamond",
+        cover: "https://placehold.co/300x300/06b6d4/white?text=Neil",
+      },
+      {
+        id: 4,
+        title: "Don't Stop Believin'",
+        artist: "Journey",
+        cover: "https://placehold.co/300x300/10b981/white?text=Journey",
+      },
+    ],
+    newReleases: [
+      {
+        id: 5,
+        title: "Flowers",
+        artist: "Miley Cyrus",
+        cover: "https://placehold.co/300x300/f59e0b/white?text=Miley",
+      },
+      {
+        id: 6,
+        title: "As It Was",
+        artist: "Harry Styles",
+        cover: "https://placehold.co/300x300/ef4444/white?text=Harry",
+      },
+      {
+        id: 7,
+        title: "Anti-Hero",
+        artist: "Taylor Swift",
+        cover: "https://placehold.co/300x300/ec4899/white?text=Taylor",
+      },
+    ],
+    duets: [
+      {
+        id: 8,
+        title: "Shallow",
+        artist: "Lady Gaga & Bradley Cooper",
+        cover: "https://placehold.co/300x300/8b5cf6/white?text=Shallow",
+      },
+      {
+        id: 9,
+        title: "Endless Love",
+        artist: "Lionel Richie & Diana Ross",
+        cover: "https://placehold.co/300x300/f97316/white?text=Endless",
+      },
+    ],
+    mongolian: [
+      {
+        id: 10,
+        title: "Хөх тэнгэр",
+        artist: "Бямбацогт",
+        cover: "https://placehold.co/300x300/06b6d4/white?text=Хөх",
+      },
+      {
+        id: 11,
+        title: "Зүүнбаян",
+        artist: "Наранцэцэг",
+        cover: "https://placehold.co/300x300/10b981/white?text=Зүүн",
+      },
+    ],
+  };
+
+  const topSingers = [
+    {
+      name: "Tuya",
+      songs: 127,
+      avatar: "https://placehold.co/40x40/6366f1/white?text=T",
+    },
+    {
+      name: "Bataa",
+      songs: 98,
+      avatar: "https://placehold.co/40x40/8b5cf6/white?text=B",
+    },
+    {
+      name: "Saruul",
+      songs: 85,
+      avatar: "https://placehold.co/40x40/06b6d4/white?text=S",
+    },
+  ];
+
+  const recentActivity = [
+    { user: "Nara", song: "Shape of You", time: "2 min ago" },
+    { user: "Bold", song: "Perfect", time: "5 min ago" },
+    { user: "Oyuna", song: "Thinking Out Loud", time: "8 min ago" },
+  ];
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="min-h-screen bg-linear-to-br from-purple-900 via-blue-900 to-indigo-900">
+      <Header 
+        isLoggedIn={isLoggedIn} 
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+      />
+      
+      <HeroSection 
+        isLoggedIn={isLoggedIn}
+        showMiniPlayer={showMiniPlayer}
+        setShowMiniPlayer={setShowMiniPlayer}
+      />
+      
+      {/* Quick Access */}
+      <section className="py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10">
+            <h2 className="text-2xl font-bold text-white mb-4">Quick Access</h2>
+            <div className="flex flex-wrap gap-3">
+              <button className="px-4 py-2 bg-purple-600/20 text-purple-300 rounded-full hover:bg-purple-600/30 transition-colors">
+                Continue Singing
+              </button>
+              <button className="px-4 py-2 bg-blue-600/20 text-blue-300 rounded-full hover:bg-blue-600/30 transition-colors">
+                Recent Searches
+              </button>
+              <button className="px-4 py-2 bg-green-600/20 text-green-300 rounded-full hover:bg-green-600/30 transition-colors">
+                My Favorites
+              </button>
+            </div>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+      </section>
+
+      <FeaturedPlaylists featuredPlaylists={featuredPlaylists} />
+      <PremiumSection />
+      <CommunitySection topSingers={topSingers} recentActivity={recentActivity} />
+
+      {/* Ad Zone - Only for free users */}
+      {!isLoggedIn && (
+        <section className="py-8 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-7xl mx-auto">
+            <div className="bg-linear-to-r from-gray-800 to-gray-900 rounded-2xl p-6 border border-gray-700 relative">
+              <div className="absolute top-2 left-2 bg-red-500 text-white px-2 py-1 rounded text-xs font-bold">
+                AD
+              </div>
+              <div className="flex items-center justify-center space-x-6">
+                <div className="text-center">
+                  <div className="w-16 h-16 bg-gray-600 rounded-full mx-auto mb-3"></div>
+                  <h3 className="text-white font-semibold">
+                    Premium Karaoke Experience
+                  </h3>
+                  <p className="text-gray-400 text-sm">
+                    Upgrade now for ad-free singing
+                  </p>
+                </div>
+                <div className="hidden md:block w-px h-16 bg-gray-700"></div>
+                <button className="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium transition-colors">
+                  Go Premium
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      <Footer />
     </div>
   );
-}
+};
+
+export default App;
