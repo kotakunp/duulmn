@@ -44,7 +44,7 @@ const ArtistIndexPage = () => {
   const [searchQuery] = useState("");
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-black text-white">
+    <div className="min-h-screen bg-linear-to-b from-gray-900 to-black text-white">
       <Header
         isLoggedIn={isLoggedIn}
         searchQuery={searchQuery}
@@ -69,7 +69,7 @@ const ArtistIndexPage = () => {
                     height={400}
                     className="w-full aspect-square object-cover"
                   />
-                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4">
+                  <div className="absolute bottom-0 left-0 right-0 bg-linear-to-t from-black to-transparent p-4">
                     <h3 className="text-xl font-bold">{artist.name}</h3>
                     <p className="text-gray-300 text-sm">
                       {artist.followers} followers
