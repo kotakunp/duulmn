@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# Instructions for running the Express server
+echo "To run the Express server, use one of the following commands:"
+echo ""
+echo "For development (with auto-restart on changes):"
+echo "  npm run server:dev"
+echo ""
+echo "For production:"
+echo "  npm run server"
+echo ""
+echo "Make sure you have set the required environment variables in your .env file:"
+echo "  JWT_SECRET=your_jwt_secret_key"
+echo "  PORT=3001 (optional, defaults to 3001)"
+echo ""
+echo "Example API calls once server is running:"
+echo "  GET    http://localhost:3001/api/auth/artist/123"
+echo "  POST   http://localhost:3001/api/auth/artist"
+echo "  PUT    http://localhost:3001/api/auth/artist/123"
+echo "  DELETE http://localhost:3001/api/auth/artist/123"
+echo ""
+echo "Remember to include Authorization header with Bearer token for all authenticated requests."

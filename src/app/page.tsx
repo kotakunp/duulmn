@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { Search, Play, Crown } from "lucide-react";
 import Header from "./components/Header";
 import HeroSection from "./components/HeroSection";
 import FeaturedPlaylists from "./components/FeaturedPlaylists";
@@ -10,7 +9,7 @@ import PremiumSection from "./components/PremiumSection";
 import Footer from "./components/Footer";
 
 const App = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, ] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [showMiniPlayer, setShowMiniPlayer] = useState(false);
 

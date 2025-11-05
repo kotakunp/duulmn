@@ -1,4 +1,3 @@
-import { Play } from "lucide-react";
 import Image from "next/image";
 
 interface PlaylistCardProps {
@@ -12,7 +11,6 @@ interface PlaylistCardProps {
 }
 
 const PlaylistCard = ({ 
-  id, 
   title, 
   artist, 
   cover, 
