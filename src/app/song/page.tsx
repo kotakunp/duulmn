@@ -16,7 +16,7 @@ const SongIndexPage = () => {
       album: "After Hours",
       duration: "3:20",
       cover: "https://placehold.co/200x200/8b5cf6/white?text=BL",
-      plays: "2.1B"
+      plays: "2.1B",
     },
     {
       id: "2",
@@ -25,7 +25,7 @@ const SongIndexPage = () => {
       album: "÷",
       duration: "3:53",
       cover: "https://placehold.co/200x200/6366f1/white?text=SOE",
-      plays: "1.8B"
+      plays: "1.8B",
     },
     {
       id: "3",
@@ -34,7 +34,7 @@ const SongIndexPage = () => {
       album: "When We All Fall Asleep",
       duration: "3:14",
       cover: "https://placehold.co/200x200/10b981/white?text=BG",
-      plays: "1.5B"
+      plays: "1.5B",
     },
     {
       id: "4",
@@ -43,7 +43,7 @@ const SongIndexPage = () => {
       album: "The Kids Are Coming",
       duration: "3:29",
       cover: "https://placehold.co/200x200/f59e0b/white?text=DT",
-      plays: "1.3B"
+      plays: "1.3B",
     },
     {
       id: "5",
@@ -52,7 +52,7 @@ const SongIndexPage = () => {
       album: "After Hours",
       duration: "3:20",
       cover: "https://placehold.co/200x200/ec4899/white?text=BL",
-      plays: "2.1B"
+      plays: "2.1B",
     },
     {
       id: "6",
@@ -61,7 +61,7 @@ const SongIndexPage = () => {
       album: "Uptown Special",
       duration: "4:30",
       cover: "https://placehold.co/200x200/06b6d4/white?text=UF",
-      plays: "1.2B"
+      plays: "1.2B",
     },
   ];
 
@@ -70,7 +70,7 @@ const SongIndexPage = () => {
   const [searchQuery] = useState("");
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-black text-white">
+    <div className="min-h-screen bg-linear-to-b from-gray-900 to-black text-white">
       <Header
         isLoggedIn={isLoggedIn}
         searchQuery={searchQuery}
@@ -97,8 +97,8 @@ const SongIndexPage = () => {
             </thead>
             <tbody>
               {popularSongs.map((song, index) => (
-                <tr 
-                  key={song.id} 
+                <tr
+                  key={song.id}
                   className="border-b border-gray-800/50 hover:bg-gray-700/30 group"
                 >
                   <td className="py-4 pl-6 text-gray-400 group-hover:text-white">

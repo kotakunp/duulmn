@@ -66,7 +66,7 @@ I'm in love with your body
 And last night you were in my room
 And now my bedsheets smell like you
 Every day discovering something brand new
-I'm in love with your body`
+I'm in love with your body`,
         };
       case "bad-guy":
         return {
@@ -97,7 +97,7 @@ I'm that bad type
 Make your mama sad type
 Make your girlfriend mad tight
 Might seduce your dad type
-I'm the bad guy, duh`
+I'm the bad guy, duh`,
         };
       case "blinding-lights":
         return {
@@ -126,7 +126,7 @@ I said, ooh, I'm blinded by the lights
 No, I can't sleep until I feel your touch
 I said, ooh, I'm drowning in the night
 Oh, when I'm like this, you're the one I trust
-Hey, hey, hey`
+Hey, hey, hey`,
         };
       default:
         return {
@@ -141,7 +141,7 @@ Hey, hey, hey`
           likes: 0,
           releaseDate: "Unknown",
           genre: "Unknown",
-          lyrics: "Lyrics not available."
+          lyrics: "Lyrics not available.",
         };
     }
   };
@@ -153,7 +153,7 @@ Hey, hey, hey`
   const [searchQuery] = useState("");
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-black text-white">
+    <div className="min-h-screen bg-linear-to-b from-gray-900 to-black text-white">
       <Header
         isLoggedIn={isLoggedIn}
         searchQuery={searchQuery}
@@ -161,7 +161,7 @@ Hey, hey, hey`
       />
 
       {/* Song header */}
-      <div className="sticky top-0 z-10 bg-gradient-to-b from-gray-900/80 to-transparent backdrop-blur-md pb-4">
+      <div className="sticky top-0 z-10 bg-linear-to-b from-gray-900/80 to-transparent backdrop-blur-md pb-4">
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex items-end space-x-6">
             <Image
@@ -175,7 +175,10 @@ Hey, hey, hey`
               <div className="text-sm font-bold">SONG</div>
               <h1 className="text-7xl font-bold mt-2">{song.title}</h1>
               <div className="flex items-center space-x-4 mt-4 text-gray-300">
-                <Link href={`/artist/${song.artistId}`} className="hover:underline">
+                <Link
+                  href={`/artist/${song.artistId}`}
+                  className="hover:underline"
+                >
                   <span className="flex items-center space-x-1">
                     <User className="h-4 w-4" />
                     <span>{song.artist}</span>
@@ -243,17 +246,20 @@ Hey, hey, hey`
           <h2 className="text-2xl font-bold mb-6">Related Songs</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {Array.from({ length: 6 }, (_, i) => (
-              <div key={i} className="flex items-center space-x-4 bg-gray-800/30 backdrop-blur-sm rounded-lg p-4 hover:bg-gray-700/30 transition-colors">
+              <div
+                key={i}
+                className="flex items-center space-x-4 bg-gray-800/30 backdrop-blur-sm rounded-lg p-4 hover:bg-gray-700/30 transition-colors"
+              >
                 <Image
-                  src={`https://placehold.co/60x60/6366f1/white?text=S${i+1}`}
-                  alt={`Related Song ${i+1}`}
+                  src={`https://placehold.co/60x60/6366f1/white?text=S${i + 1}`}
+                  alt={`Related Song ${i + 1}`}
                   width={60}
                   height={60}
                   className="rounded"
                 />
                 <div className="flex-1">
-                  <div className="font-medium">Related Song {i+1}</div>
-                  <div className="text-gray-400 text-sm">Artist {i+1}</div>
+                  <div className="font-medium">Related Song {i + 1}</div>
+                  <div className="text-gray-400 text-sm">Artist {i + 1}</div>
                 </div>
                 <button className="p-2 rounded-full hover:bg-gray-700">
                   <Play className="h-5 w-5" />
