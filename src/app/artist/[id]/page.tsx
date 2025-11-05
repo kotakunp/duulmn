@@ -1,26 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { Play, Heart, MoreHorizontal, User, Music } from "lucide-react";
+import { Play, Heart, MoreHorizontal, User } from "lucide-react";
 import Image from "next/image";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import { useParams } from "next/navigation";
-
-interface Song {
-  id: number;
-  title: string;
-  album: string;
-  duration: string;
-  cover: string;
-}
-
-interface Album {
-  id: number;
-  title: string;
-  year: number;
-  cover: string;
-}
 
 const ArtistPage = () => {
   const params = useParams();
