@@ -2,7 +2,7 @@ import { TrendingUp, Users, Star } from "lucide-react";
 import PlaylistCard from "./PlaylistCard";
 
 interface Song {
-  id: number;
+  id: string | number;
   title: string;
   artist: string;
   cover: string;

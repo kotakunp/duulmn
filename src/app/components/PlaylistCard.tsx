@@ -1,7 +1,7 @@
 import Image from "next/image";
 
 interface PlaylistCardProps {
-  id: number;
+  id: string | number;
   title: string;
   artist: string;
   cover: string;

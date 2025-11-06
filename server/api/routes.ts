@@ -1,5 +1,7 @@
 import { Router, Request, Response } from 'express';
 import { requireAuth } from '../middleware/auth';
+import Song from '../models/Song';
+import Artist from '../models/Artist';
 
 // Create Express router
 const router = Router();
@@ -143,23 +145,19 @@ router.get('/artist/:id', requireAuth, async (req: Request, res: Response) => {
     // Sanitize ID
     const sanitizedId = id.trim();
 
-    // TODO: Implement logic to fetch artist data by ID from database
-    // For now, returning a mock response
-    const artistData = {
-      id: sanitizedId,
-      name: `Artist ${sanitizedId}`,
-      bio: 'Sample bio for this artist',
-      profileImage: '/api/placeholder/200/200',
-      verified: false,
-      followers: 1234,
-      tracks: 42,
-      albums: 5,
-      createdAt: new Date().toISOString()
-    };
+    // Fetch artist from database
+    const artist = await Artist.findById(sanitizedId);
+    
+    if (!artist) {
+      return res.status(404).json({ 
+        error: 'Artist not found',
+        code: 'ARTIST_NOT_FOUND'
+      });
+    }
 
     return res.status(200).json({ 
       success: true, 
-      data: artistData,
+      data: artist,
       timestamp: new Date().toISOString()
     });
   } catch (error) {
@@ -200,21 +198,25 @@ router.post('/artist', requireAuth, async (req: Request, res: Response) => {
     // Sanitize inputs
     const sanitizedName = name.trim();
     const sanitizedBio = bio ? bio.trim() : '';
-    const sanitizedProfileImage = profileImage ? profileImage.trim() : '/api/placeholder/200/200';
+    const sanitizedProfileImage = profileImage ? profileImage.trim() : '';
 
-    // TODO: Implement logic to create artist in database
-    // For now, returning a mock response
-    const newArtist = {
-      id: Date.now().toString(), // Mock ID
+    // Check if artist already exists
+    const existingArtist = await Artist.findOne({ name: sanitizedName });
+    if (existingArtist) {
+      return res.status(409).json({ 
+        error: 'Artist already exists',
+        code: 'ARTIST_EXISTS'
+      });
+    }
+
+    // Create artist in database
+    const newArtist = new Artist({
       name: sanitizedName,
       bio: sanitizedBio,
       profileImage: sanitizedProfileImage,
-      verified: false,
-      createdAt: new Date().toISOString(),
-      followers: 0,
-      tracks: 0,
-      albums: 0
-    };
+    });
+
+    await newArtist.save();
 
     return res.status(201).json({ 
       success: true, 
@@ -266,19 +268,23 @@ router.put('/artist/:id', requireAuth, async (req: Request, res: Response) => {
     const sanitizedProfileImage = profileImage ? profileImage.trim() : undefined;
     const sanitizedId = id.trim();
 
-    // TODO: Implement logic to update artist in database
-    // For now, returning a mock response
-    const updatedArtist = {
-      id: sanitizedId,
-      name: sanitizedName || `Artist ${sanitizedId}`,
-      bio: sanitizedBio || 'Sample bio for this artist',
-      profileImage: sanitizedProfileImage || '/api/placeholder/200/200',
-      verified: false,
-      updatedAt: new Date().toISOString(),
-      followers: 1234,
-      tracks: 42,
-      albums: 5
-    };
+    // Update artist in database
+    const updatedArtist = await Artist.findByIdAndUpdate(
+      sanitizedId,
+      {
+        ...(sanitizedName !== undefined && { name: sanitizedName }),
+        ...(sanitizedBio !== undefined && { bio: sanitizedBio }),
+        ...(sanitizedProfileImage !== undefined && { profileImage: sanitizedProfileImage })
+      },
+      { new: true } // Return updated document
+    );
+    
+    if (!updatedArtist) {
+      return res.status(404).json({ 
+        error: 'Artist not found',
+        code: 'ARTIST_NOT_FOUND'
+      });
+    }
 
     return res.status(200).json({ 
       success: true, 
@@ -313,8 +319,16 @@ router.delete('/artist/:id', requireAuth, async (req: Request, res: Response) =>
     // Sanitize ID
     const sanitizedId = id.trim();
 
-    // TODO: Implement logic to delete artist from database
-    // For now, returning a mock success response
+    // Delete artist from database
+    const deletedArtist = await Artist.findByIdAndDelete(sanitizedId);
+    
+    if (!deletedArtist) {
+      return res.status(404).json({ 
+        error: 'Artist not found',
+        code: 'ARTIST_NOT_FOUND'
+      });
+    }
+
     return res.status(200).json({ 
       success: true,
       message: `Artist ${sanitizedId} deleted successfully`,
@@ -350,26 +364,19 @@ router.get('/song/:id', requireAuth, async (req: Request, res: Response) => {
     // Sanitize ID
     const sanitizedId = id.trim();
 
-    // TODO: Implement logic to fetch song data by ID from database
-    // For now, returning a mock response
-    const songData = {
-      id: sanitizedId,
-      title: `Song ${sanitizedId}`,
-      artistId: 'artist-1',
-      artistName: 'Sample Artist',
-      album: 'Sample Album',
-      duration: '3:45',
-      genre: 'Pop',
-      lyrics: 'Sample lyrics for this song',
-      coverImage: '/api/placeholder/200/200',
-      createdAt: new Date().toISOString(),
-      plays: 1500,
-      likes: 120
-    };
+    // Fetch song from database
+    const song = await Song.findById(sanitizedId).populate('artistId');
+    
+    if (!song) {
+      return res.status(404).json({ 
+        error: 'Song not found',
+        code: 'SONG_NOT_FOUND'
+      });
+    }
 
     return res.status(200).json({ 
       success: true, 
-      data: songData,
+      data: song,
       timestamp: new Date().toISOString()
     });
   } catch (error: unknown) {
@@ -386,30 +393,47 @@ router.get('/song/:id', requireAuth, async (req: Request, res: Response) => {
 // GET route - Fetch all songs (with optional filters)
 router.get('/songs', requireAuth, async (req: Request, res: Response) => {
   try {
-    const { artistId, limit = 20, offset = 0 } = req.query;
+    const { artistId, limit = 20, offset = 0, genre, search } = req.query;
 
-    // TODO: Implement logic to fetch songs from database with filters
-    // For now, returning a mock response
-    const songs = Array.from({ length: 10 }, (_, i) => ({
-      id: `song-${i + 1}`,
-      title: `Song ${i + 1}`,
-      artistId: artistId ? String(artistId) : `artist-${i % 3 + 1}`,
-      artistName: `Artist ${i % 3 + 1}`,
-      album: `Album ${i % 5 + 1}`,
-      duration: `${Math.floor(Math.random() * 5) + 2}:${String(Math.floor(Math.random() * 60)).padStart(2, '0')}`,
-      genre: ['Pop', 'Rock', 'Jazz', 'Classical', 'Electronic'][i % 5],
-      coverImage: `/api/placeholder/200/200`,
-      plays: Math.floor(Math.random() * 10000),
-      likes: Math.floor(Math.random() * 1000)
-    }));
+    // Build query object
+    const query: any = {};
+    
+    if (artistId) {
+      query.artistId = artistId;
+    }
+    
+    if (genre) {
+      query.genre = { $regex: String(genre), $options: 'i' }; // Case-insensitive search
+    }
+    
+    if (search) {
+      query.$or = [
+        { title: { $regex: String(search), $options: 'i' } },
+        { artist: { $regex: String(search), $options: 'i' } }
+      ];
+    }
+
+    // Convert limit and offset to numbers
+    const limitNum = parseInt(String(limit), 10);
+    const offsetNum = parseInt(String(offset), 10);
+
+    // Fetch songs from database with pagination
+    const songs = await Song.find(query)
+      .populate('artistId')
+      .limit(limitNum)
+      .skip(offsetNum)
+      .sort({ createdAt: -1 }); // Sort by newest first
+
+    // Get total count for pagination
+    const total = await Song.countDocuments(query);
 
     return res.status(200).json({ 
       success: true, 
       data: {
         songs,
-        total: 10,
-        limit: parseInt(String(limit)),
-        offset: parseInt(String(offset))
+        total,
+        limit: limitNum,
+        offset: offsetNum
       },
       timestamp: new Date().toISOString()
     });
@@ -427,7 +451,7 @@ router.get('/songs', requireAuth, async (req: Request, res: Response) => {
 // POST route - Create new song
 router.post('/song', requireAuth, async (req: Request, res: Response) => {
   try {
-    const { title, artistId, album, duration, genre, lyrics, coverImage } = req.body;
+    const { title, artist, album, duration, genre, lyrics, coverImage, filePath, language } = req.body;
 
     // Validate required fields
     if (!title) {
@@ -438,16 +462,24 @@ router.post('/song', requireAuth, async (req: Request, res: Response) => {
       });
     }
 
-    if (!artistId) {
+    if (!artist) {
       return res.status(400).json({ 
-        error: 'Artist ID is required',
+        error: 'Artist name is required',
         code: 'MISSING_FIELD',
-        field: 'artistId'
+        field: 'artist'
+      });
+    }
+
+    if (!duration) {
+      return res.status(400).json({ 
+        error: 'Duration is required',
+        code: 'MISSING_FIELD',
+        field: 'duration'
       });
     }
 
     // Validate input data
-    const validationErrors = validateSongInput({ title, artistId, album, duration, genre });
+    const validationErrors = validateSongInput({ title, album, duration, genre });
     if (validationErrors.length > 0) {
       return res.status(400).json({ 
         error: 'Validation failed',
@@ -458,29 +490,58 @@ router.post('/song', requireAuth, async (req: Request, res: Response) => {
 
     // Sanitize inputs
     const sanitizedTitle = title.trim();
-    const sanitizedArtistId = artistId.trim();
+    const sanitizedArtist = artist.trim();
     const sanitizedAlbum = album ? album.trim() : '';
-    const sanitizedDuration = duration ? duration.trim() : '3:00';
-    const sanitizedGenre = genre ? genre.trim() : 'Pop';
+    const sanitizedDuration = duration.trim();
+    const sanitizedGenre = genre ? genre.trim() : '';
     const sanitizedLyrics = lyrics ? lyrics.trim() : '';
-    const sanitizedCoverImage = coverImage ? coverImage.trim() : '/api/placeholder/200/200';
+    const sanitizedCoverImage = coverImage ? coverImage.trim() : '';
+    const sanitizedFilePath = filePath ? filePath.trim() : '';
+    const sanitizedLanguage = language ? language.trim() : 'Mongolian';
 
-    // TODO: Implement logic to create song in database
-    // For now, returning a mock response
-    const newSong = {
-      id: Date.now().toString(), // Mock ID
+    // Check if song already exists
+    const existingSong = await Song.findOne({ 
+      title: sanitizedTitle, 
+      artist: sanitizedArtist 
+    });
+    
+    if (existingSong) {
+      return res.status(409).json({ 
+        error: 'Song already exists',
+        code: 'SONG_EXISTS'
+      });
+    }
+
+    // Check if artist exists, create if not
+    let artistId: any = null;
+    const existingArtist = await Artist.findOne({ name: sanitizedArtist });
+    if (!existingArtist) {
+      const newArtist = await Artist.create({
+        name: sanitizedArtist,
+      });
+      artistId = newArtist._id;
+    } else {
+      artistId = existingArtist._id;
+    }
+
+    // Create song in database
+    const newSong = new Song({
       title: sanitizedTitle,
-      artistId: sanitizedArtistId,
-      artistName: `Artist ${sanitizedArtistId}`, // Mock artist name
+      artist: sanitizedArtist,
+      artistId: artistId,
       album: sanitizedAlbum,
       duration: sanitizedDuration,
       genre: sanitizedGenre,
       lyrics: sanitizedLyrics,
       coverImage: sanitizedCoverImage,
-      createdAt: new Date().toISOString(),
-      plays: 0,
-      likes: 0
-    };
+      filePath: sanitizedFilePath,
+      language: sanitizedLanguage,
+    });
+
+    await newSong.save();
+
+    // Populate the artistId in the response
+    await newSong.populate('artistId');
 
     return res.status(201).json({ 
       success: true, 
@@ -512,13 +573,19 @@ router.put('/song/:id', requireAuth, async (req: Request, res: Response) => {
       });
     }
 
-    const { title, artistId, album, duration, genre, lyrics, coverImage } = req.body;
+    const { title, artist, album, duration, genre, lyrics, coverImage, filePath, language } = req.body;
 
     // Validate update fields if provided
-    if (title !== undefined || artistId !== undefined || album !== undefined || 
+    if (title !== undefined || artist !== undefined || album !== undefined || 
         duration !== undefined || genre !== undefined || lyrics !== undefined || 
-        coverImage !== undefined) {
-      const validationErrors = validateSongInput({ title, artistId, album, duration, genre });
+        coverImage !== undefined || filePath !== undefined || language !== undefined) {
+      const partialData: SongInput = {};
+      if (title !== undefined) partialData.title = title;
+      if (album !== undefined) partialData.album = album;
+      if (duration !== undefined) partialData.duration = duration;
+      if (genre !== undefined) partialData.genre = genre;
+      
+      const validationErrors = validateSongInput(partialData);
       if (validationErrors.length > 0) {
         return res.status(400).json({ 
           error: 'Validation failed',
@@ -530,30 +597,39 @@ router.put('/song/:id', requireAuth, async (req: Request, res: Response) => {
 
     // Sanitize inputs
     const sanitizedTitle = title ? title.trim() : undefined;
-    const sanitizedArtistId = artistId ? artistId.trim() : undefined;
+    const sanitizedArtist = artist ? artist.trim() : undefined;
     const sanitizedAlbum = album ? album.trim() : undefined;
     const sanitizedDuration = duration ? duration.trim() : undefined;
     const sanitizedGenre = genre ? genre.trim() : undefined;
     const sanitizedLyrics = lyrics ? lyrics.trim() : undefined;
     const sanitizedCoverImage = coverImage ? coverImage.trim() : undefined;
+    const sanitizedFilePath = filePath ? filePath.trim() : undefined;
+    const sanitizedLanguage = language ? language.trim() : undefined;
     const sanitizedId = id.trim();
 
-    // TODO: Implement logic to update song in database
-    // For now, returning a mock response
-    const updatedSong = {
-      id: sanitizedId,
-      title: sanitizedTitle || `Song ${sanitizedId}`,
-      artistId: sanitizedArtistId || 'artist-1',
-      artistName: sanitizedArtistId ? `Artist ${sanitizedArtistId}` : 'Sample Artist',
-      album: sanitizedAlbum || 'Sample Album',
-      duration: sanitizedDuration || '3:45',
-      genre: sanitizedGenre || 'Pop',
-      lyrics: sanitizedLyrics || 'Sample lyrics for this song',
-      coverImage: sanitizedCoverImage || '/api/placeholder/200/200',
-      updatedAt: new Date().toISOString(),
-      plays: 1500,
-      likes: 120
-    };
+    // Update song in database
+    const updatedSong = await Song.findByIdAndUpdate(
+      sanitizedId,
+      {
+        ...(sanitizedTitle !== undefined && { title: sanitizedTitle }),
+        ...(sanitizedArtist !== undefined && { artist: sanitizedArtist }),
+        ...(sanitizedAlbum !== undefined && { album: sanitizedAlbum }),
+        ...(sanitizedDuration !== undefined && { duration: sanitizedDuration }),
+        ...(sanitizedGenre !== undefined && { genre: sanitizedGenre }),
+        ...(sanitizedLyrics !== undefined && { lyrics: sanitizedLyrics }),
+        ...(sanitizedCoverImage !== undefined && { coverImage: sanitizedCoverImage }),
+        ...(sanitizedFilePath !== undefined && { filePath: sanitizedFilePath }),
+        ...(sanitizedLanguage !== undefined && { language: sanitizedLanguage })
+      },
+      { new: true } // Return updated document
+    ).populate('artistId');
+    
+    if (!updatedSong) {
+      return res.status(404).json({ 
+        error: 'Song not found',
+        code: 'SONG_NOT_FOUND'
+      });
+    }
 
     return res.status(200).json({ 
       success: true, 
@@ -588,8 +664,16 @@ router.delete('/song/:id', requireAuth, async (req: Request, res: Response) => {
     // Sanitize ID
     const sanitizedId = id.trim();
 
-    // TODO: Implement logic to delete song from database
-    // For now, returning a mock success response
+    // Delete song from database
+    const deletedSong = await Song.findByIdAndDelete(sanitizedId);
+    
+    if (!deletedSong) {
+      return res.status(404).json({ 
+        error: 'Song not found',
+        code: 'SONG_NOT_FOUND'
+      });
+    }
+
     return res.status(200).json({ 
       success: true,
       message: `Song ${sanitizedId} deleted successfully`,
