@@ -1,95 +1,197 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Header from "./components/Header";
 import HeroSection from "./components/HeroSection";
 import FeaturedPlaylists from "./components/FeaturedPlaylists";
 import CommunitySection from "./components/CommunitySection";
 import PremiumSection from "./components/PremiumSection";
 import Footer from "./components/Footer";
+import { fetchSongs } from "../utils/api";
+import { ISong } from "../types";
+import { SongProvider, useSongContext } from "../contexts/SongContext";
 
-const App = () => {
+interface PlaylistItem {
+  id: string;
+  title: string;
+  artist: string;
+  cover: string;
+}
+
+interface PlaylistData {
+  trending: PlaylistItem[];
+  newReleases: PlaylistItem[];
+  duets: PlaylistItem[];
+  mongolian: PlaylistItem[];
+}
+
+// Separate component that uses the context
+const AppContent = () => {
+  const { state, dispatch } = useSongContext();
   const [isLoggedIn, ] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [showMiniPlayer, setShowMiniPlayer] = useState(false);
+  const [featuredPlaylists, setFeaturedPlaylists] = useState<PlaylistData>({
+    trending: [],
+    newReleases: [],
+    duets: [],
+    mongolian: []
+  });
+  const [loading, setLoading] = useState(true);
 
-  // Mock data
-  const featuredPlaylists = {
-    trending: [
-      {
-        id: 1,
-        title: "Dancing Queen",
-        artist: "ABBA",
-        cover: "https://placehold.co/300x300/6366f1/white?text=ABBA",
-      },
-      {
-        id: 2,
-        title: "Bohemian Rhapsody",
-        artist: "Queen",
-        cover: "https://placehold.co/300x300/8b5cf6/white?text=Queen",
-      },
-      {
-        id: 3,
-        title: "Sweet Caroline",
-        artist: "Neil Diamond",
-        cover: "https://placehold.co/300x300/06b6d4/white?text=Neil",
-      },
-      {
-        id: 4,
-        title: "Don't Stop Believin'",
-        artist: "Journey",
-        cover: "https://placehold.co/300x300/10b981/white?text=Journey",
-      },
-    ],
-    newReleases: [
-      {
-        id: 5,
-        title: "Flowers",
-        artist: "Miley Cyrus",
-        cover: "https://placehold.co/300x300/f59e0b/white?text=Miley",
-      },
-      {
-        id: 6,
-        title: "As It Was",
-        artist: "Harry Styles",
-        cover: "https://placehold.co/300x300/ef4444/white?text=Harry",
-      },
-      {
-        id: 7,
-        title: "Anti-Hero",
-        artist: "Taylor Swift",
-        cover: "https://placehold.co/300x300/ec4899/white?text=Taylor",
-      },
-    ],
-    duets: [
-      {
-        id: 8,
-        title: "Shallow",
-        artist: "Lady Gaga & Bradley Cooper",
-        cover: "https://placehold.co/300x300/8b5cf6/white?text=Shallow",
-      },
-      {
-        id: 9,
-        title: "Endless Love",
-        artist: "Lionel Richie & Diana Ross",
-        cover: "https://placehold.co/300x300/f97316/white?text=Endless",
-      },
-    ],
-    mongolian: [
-      {
-        id: 10,
-        title: "Хөх тэнгэр",
-        artist: "Бямбацогт",
-        cover: "https://placehold.co/300x300/06b6d4/white?text=Хөх",
-      },
-      {
-        id: 11,
-        title: "Зүүнбаян",
-        artist: "Наранцэцэг",
-        cover: "https://placehold.co/300x300/10b981/white?text=Зүүн",
-      },
-    ],
-  };
+  useEffect(() => {
+    const loadSongs = async () => {
+      try {
+        dispatch({ type: 'SET_LOADING', payload: true });
+        
+        // Fetch all songs from the API
+        const response = await fetchSongs(20, 0);
+        
+        if (response.success && response.data.songs) {
+          const allSongs = response.data.songs;
+          
+          // Dispatch all songs to context
+          dispatch({ type: 'SET_SONGS', payload: allSongs });
+          
+          // Categorize songs based on different criteria
+          const trending = allSongs.slice(0, 4);
+          const newReleases = allSongs.slice(4, 7);
+          const duets = allSongs.filter(song => 
+            song.title.toLowerCase().includes('duet') || 
+            song.artist.toLowerCase().includes('&') ||
+            song.title.toLowerCase().includes('feat') ||
+            song.artist.toLowerCase().includes('and')
+          ).slice(0, 4);
+          const mongolian = allSongs.filter(song => 
+            song.language?.toLowerCase() === 'mongolian'
+          ).slice(0, 4);
+          
+          setFeaturedPlaylists({
+            trending: trending.map(song => ({
+              id: song._id,
+              title: song.title,
+              artist: song.artist,
+              cover: song.coverImage || `https://placehold.co/300x300/6366f1/white?text=${encodeURIComponent(song.title.substring(0, 3))}`
+            })),
+            newReleases: newReleases.map(song => ({
+              id: song._id,
+              title: song.title,
+              artist: song.artist,
+              cover: song.coverImage || `https://placehold.co/300x300/f59e0b/white?text=${encodeURIComponent(song.title.substring(0, 3))}`
+            })),
+            duets: duets.length > 0 ? duets.map(song => ({
+              id: song._id,
+              title: song.title,
+              artist: song.artist,
+              cover: song.coverImage || `https://placehold.co/300x300/8b5cf6/white?text=${encodeURIComponent(song.title.substring(0, 3))}`
+            })) : [...Array(2)].map((_, i) => ({
+              id: i.toString(),
+              title: "Sample Duet",
+              artist: "Artist 1 & Artist 2",
+              cover: `https://placehold.co/300x300/8b5cf6/white?text=Duet${i+1}`
+            })),
+            mongolian: mongolian.length > 0 ? mongolian.map(song => ({
+              id: song._id,
+              title: song.title,
+              artist: song.artist,
+              cover: song.coverImage || `https://placehold.co/300x300/06b6d4/white?text=${encodeURIComponent(song.title.substring(0, 3))}`
+            })) : [...Array(2)].map((_, i) => ({
+              id: i.toString(),
+              title: `Монгол дуу ${i+1}`,
+              artist: "Монголын дуучин",
+              cover: `https://placehold.co/300x300/06b6d4/white?text=Монгол${i+1}`
+            }))
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching songs:', error);
+        dispatch({ type: 'SET_ERROR', payload: 'Failed to load songs' });
+        
+        // Fallback to some mock data in case of error
+        setFeaturedPlaylists({
+          trending: [
+            {
+              id: "1",
+              title: "Dancing Queen",
+              artist: "ABBA",
+              cover: "https://placehold.co/300x300/6366f1/white?text=ABBA",
+            },
+            {
+              id: "2",
+              title: "Bohemian Rhapsody",
+              artist: "Queen",
+              cover: "https://placehold.co/300x300/8b5cf6/white?text=Queen",
+            },
+            {
+              id: "3",
+              title: "Sweet Caroline",
+              artist: "Neil Diamond",
+              cover: "https://placehold.co/300x300/06b6d4/white?text=Neil",
+            },
+            {
+              id: "4",
+              title: "Don't Stop Believin'",
+              artist: "Journey",
+              cover: "https://placehold.co/300x300/10b981/white?text=Journey",
+            },
+          ],
+          newReleases: [
+            {
+              id: "5",
+              title: "Flowers",
+              artist: "Miley Cyrus",
+              cover: "https://placehold.co/300x300/f59e0b/white?text=Miley",
+            },
+            {
+              id: "6",
+              title: "As It Was",
+              artist: "Harry Styles",
+              cover: "https://placehold.co/300x300/ef4444/white?text=Harry",
+            },
+            {
+              id: "7",
+              title: "Anti-Hero",
+              artist: "Taylor Swift",
+              cover: "https://placehold.co/300x300/ec4899/white?text=Taylor",
+            },
+          ],
+          duets: [
+            {
+              id: "8",
+              title: "Shallow",
+              artist: "Lady Gaga & Bradley Cooper",
+              cover: "https://placehold.co/300x300/8b5cf6/white?text=Shallow",
+            },
+            {
+              id: "9",
+              title: "Endless Love",
+              artist: "Lionel Richie & Diana Ross",
+              cover: "https://placehold.co/300x300/f97316/white?text=Endless",
+            },
+          ],
+          mongolian: [
+            {
+              id: "10",
+              title: "Хөх тэнгэр",
+              artist: "Бямбацогт",
+              cover: "https://placehold.co/300x300/06b6d4/white?text=Хөх",
+            },
+            {
+              id: "11",
+              title: "Зүүнбаян",
+              artist: "Наранцэцэг",
+              cover: "https://placehold.co/300x300/10b981/white?text=Зүүн",
+            },
+          ]
+        });
+      } finally {
+        dispatch({ type: 'SET_LOADING', payload: false });
+        setLoading(false);
+      }
+    };
+
+    loadSongs();
+  }, []);
 
   const topSingers = [
     {
@@ -114,6 +216,14 @@ const App = () => {
     { user: "Bold", song: "Perfect", time: "5 min ago" },
     { user: "Oyuna", song: "Thinking Out Loud", time: "8 min ago" },
   ];
+
+  if (state.loading) {
+    return (
+      <div className="min-h-screen bg-linear-to-br from-purple-900 via-blue-900 to-indigo-900 flex items-center justify-center">
+        <div className="text-white text-2xl">Loading songs...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-linear-to-br from-purple-900 via-blue-900 to-indigo-900">
@@ -183,6 +293,14 @@ const App = () => {
 
       <Footer />
     </div>
+  );
+};
+
+const App = () => {
+  return (
+    <SongProvider>
+      <AppContent />
+    </SongProvider>
   );
 };
 
