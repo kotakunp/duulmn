@@ -10,6 +10,8 @@ import Footer from "./components/Footer";
 import { fetchSongs } from "../utils/api";
 import { ISong } from "../types";
 import { SongProvider, useSongContext } from "../contexts/SongContext";
+import { useAuth } from "../contexts/AuthContext";
+import { useDebounce } from "../hooks/useDebounce";
 
 interface PlaylistItem {
   id: string;
@@ -28,7 +30,7 @@ interface PlaylistData {
 // Separate component that uses the context
 const AppContent = () => {
   const { state, dispatch } = useSongContext();
-  const [isLoggedIn, ] = useState(false);
+  const { state: authState } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
   const [showMiniPlayer, setShowMiniPlayer] = useState(false);
   const [featuredPlaylists, setFeaturedPlaylists] = useState<PlaylistData>({
@@ -39,13 +41,16 @@ const AppContent = () => {
   });
   const [loading, setLoading] = useState(true);
 
+  // Debounce search query to avoid too many API calls
+  const debouncedSearchQuery = useDebounce(searchQuery, 500);
+
   useEffect(() => {
     const loadSongs = async () => {
       try {
         dispatch({ type: 'SET_LOADING', payload: true });
         
-        // Fetch all songs from the API
-        const response = await fetchSongs(20, 0);
+        // Fetch songs from the API, with search if query exists
+        const response = await fetchSongs(20, 0, debouncedSearchQuery);
         
         if (response.success && response.data.songs) {
           const allSongs = response.data.songs;
@@ -191,7 +196,7 @@ const AppContent = () => {
     };
 
     loadSongs();
-  }, []);
+  }, [dispatch, debouncedSearchQuery]);
 
   const topSingers = [
     {
@@ -228,13 +233,11 @@ const AppContent = () => {
   return (
     <div className="min-h-screen bg-linear-to-br from-purple-900 via-blue-900 to-indigo-900">
       <Header 
-        isLoggedIn={isLoggedIn} 
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
       />
       
       <HeroSection 
-        isLoggedIn={isLoggedIn}
         showMiniPlayer={showMiniPlayer}
         setShowMiniPlayer={setShowMiniPlayer}
       />
@@ -264,7 +267,7 @@ const AppContent = () => {
       <CommunitySection topSingers={topSingers} recentActivity={recentActivity} />
 
       {/* Ad Zone - Only for free users */}
-      {!isLoggedIn && (
+      {!authState.user && (
         <section className="py-8 px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto">
             <div className="bg-linear-to-r from-gray-800 to-gray-900 rounded-2xl p-6 border border-gray-700 relative">

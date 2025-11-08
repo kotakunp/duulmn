@@ -2,6 +2,7 @@ import { Router, Request, Response } from 'express';
 import { requireAuth } from '../middleware/auth';
 import Song from '../models/Song';
 import Artist from '../models/Artist';
+import authRoutes from './auth.route';
 
 // Create Express router
 const router = Router();
@@ -391,7 +392,9 @@ router.get('/song/:id', requireAuth, async (req: Request, res: Response) => {
 });
 
 // GET route - Fetch all songs (with optional filters)
-router.get('/songs', requireAuth, async (req: Request, res: Response) => {
+// NOTE: Making this route public to allow search functionality without authentication
+// Private user-specific functionality should be on other routes
+router.get('/songs', async (req: Request, res: Response) => {
   try {
     const { artistId, limit = 20, offset = 0, genre, search } = req.query;
 
@@ -990,5 +993,8 @@ router.delete('/location/:id', requireAuth, async (req: Request, res: Response) 
     });
   }
 });
+
+// Mount authentication routes (these don't require authentication)
+router.use('/auth', authRoutes);
 
 export default router;

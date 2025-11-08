@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useAuth } from "../../contexts/AuthContext";
 import Image from "next/image";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
@@ -40,13 +41,12 @@ const ArtistIndexPage = () => {
   ];
 
   // State for header
-  const [isLoggedIn] = useState(false);
+  const { state: authState } = useAuth();
   const [searchQuery] = useState("");
 
   return (
     <div className="min-h-screen bg-linear-to-b from-gray-900 to-black text-white">
       <Header
-        isLoggedIn={isLoggedIn}
         searchQuery={searchQuery}
         onSearchChange={() => {}} // No-op for artist page
       />

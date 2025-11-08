@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useAuth } from "../../contexts/AuthContext";
 import {
   MapPin,
   Phone,
@@ -98,13 +99,12 @@ const LocationIndexPage = () => {
   ];
 
   // State for header
-  const [isLoggedIn] = useState(false);
+  const { state: authState } = useAuth();
   const [searchQuery] = useState("");
 
   return (
     <div className="min-h-screen bg-linear-to-b from-gray-900 to-black text-white">
       <Header
-        isLoggedIn={isLoggedIn}
         searchQuery={searchQuery}
         onSearchChange={() => {}} // No-op for locations page
       />

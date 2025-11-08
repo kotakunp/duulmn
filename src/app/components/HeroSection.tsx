@@ -1,13 +1,15 @@
 import { Play, Crown } from "lucide-react";
 import Image from "next/image";
+import { useAuth } from "../../contexts/AuthContext";
 
 interface HeroSectionProps {
-  isLoggedIn: boolean;
   showMiniPlayer: boolean;
   setShowMiniPlayer: (show: boolean) => void;
 }
 
-const HeroSection = ({ isLoggedIn, showMiniPlayer, setShowMiniPlayer }: HeroSectionProps) => {
+const HeroSection = ({ showMiniPlayer, setShowMiniPlayer }: HeroSectionProps) => {
+  const { state: authState } = useAuth();
+
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background Video Placeholder */}
@@ -19,9 +21,9 @@ const HeroSection = ({ isLoggedIn, showMiniPlayer, setShowMiniPlayer }: HeroSect
       </div>
 
       <div className="relative z-10 text-center px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
-        {isLoggedIn ? (
+        {authState.user ? (
           <h1 className="text-5xl md:text-7xl font-bold text-white mb-6">
-            Welcome back, <span className="text-purple-400">Tuyabayar</span> —
+            Welcome back, <span className="text-purple-400">{authState.user.username}</span> —
             pick up where you left off 🎶
           </h1>
         ) : (

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useAuth } from "../../../contexts/AuthContext";
 import { Play, Heart, MoreHorizontal, User } from "lucide-react";
 import Image from "next/image";
 import Header from "../../components/Header";
@@ -148,14 +149,14 @@ Hey, hey, hey`,
 
   const song = getSongData(songId);
 
+  const { state: authState } = useAuth();
+  
   // State for header
-  const [isLoggedIn] = useState(false);
   const [searchQuery] = useState("");
 
   return (
     <div className="min-h-screen bg-linear-to-b from-gray-900 to-black text-white">
       <Header
-        isLoggedIn={isLoggedIn}
         searchQuery={searchQuery}
         onSearchChange={() => {}} // No-op for song page
       />
