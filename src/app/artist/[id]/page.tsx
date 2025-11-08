@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useAuth } from "../../../contexts/AuthContext";
 import { Play, Heart, MoreHorizontal, User } from "lucide-react";
 import Image from "next/image";
 import Header from "../../components/Header";
@@ -70,8 +71,11 @@ const ArtistPage = () => {
   const artist = getArtistData(artistId);
 
   // State for header
-  const [isLoggedIn] = useState(false);
+  const { state: authState } = useAuth();
   const [searchQuery] = useState("");
+  
+  // Use authState to show different content based on login status if needed
+  // Currently we're just using it for the header, but we can expand functionality
 
   // Get artist-specific data
   const getArtistDetailsData = (id: string) => {
@@ -546,7 +550,6 @@ const ArtistPage = () => {
   return (
     <div className="min-h-screen bg-linear-to-b from-gray-900 to-black text-white">
       <Header
-        isLoggedIn={isLoggedIn}
         searchQuery={searchQuery}
         onSearchChange={() => {}} // No-op for artist page
       />

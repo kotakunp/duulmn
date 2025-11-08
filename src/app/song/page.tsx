@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useAuth } from "../../contexts/AuthContext";
 import { Play, Search } from "lucide-react";
 import Image from "next/image";
 import Header from "../components/Header";
@@ -13,7 +14,7 @@ const SongIndexPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [isLoggedIn] = useState(false);
+  const { state: authState } = useAuth();
 
   useEffect(() => {
     const loadSongs = async () => {
@@ -51,7 +52,6 @@ const SongIndexPage = () => {
   return (
     <div className="min-h-screen bg-linear-to-b from-gray-900 to-black text-white">
       <Header
-        isLoggedIn={isLoggedIn}
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
       />
