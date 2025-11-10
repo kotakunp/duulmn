@@ -1,17 +1,17 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Header from "./components/Header";
-import HeroSection from "./components/HeroSection";
-import FeaturedPlaylists from "./components/FeaturedPlaylists";
-import CommunitySection from "./components/CommunitySection";
-import PremiumSection from "./components/PremiumSection";
-import Footer from "./components/Footer";
-import { fetchSongs } from "../utils/api";
-import { ISong } from "../types";
-import { SongProvider, useSongContext } from "../contexts/SongContext";
-import { useAuth } from "../contexts/AuthContext";
-import { useDebounce } from "../hooks/useDebounce";
+import Header from "@/components/Header";
+import HeroSection from "@/components/HeroSection";
+import FeaturedPlaylists from "@/components/FeaturedPlaylists";
+import CommunitySection from "@/components/CommunitySection";
+import PremiumSection from "@/components/PremiumSection";
+import Footer from "@/components/Footer";
+import { fetchSongs } from "@/utils/api";
+import { ISong } from "@/types";
+import { SongProvider, useSongContext } from "@/lib/context/SongContext";
+import { useAuth } from "@/lib/context/AuthContext";
+import { useDebounce } from "@/lib/hooks/useDebounce";
 
 interface PlaylistItem {
   id: string;
