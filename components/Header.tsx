@@ -1,6 +1,6 @@
 import { Search, Mic, Music } from "lucide-react";
 import Image from "next/image";
-import { useAuth } from "../../contexts/AuthContext";
+import { useAuth } from "@/lib/context/AuthContext";
 import Link from "next/link";
 
 interface HeaderProps {

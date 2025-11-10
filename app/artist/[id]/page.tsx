@@ -1,11 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { useAuth } from "../../../contexts/AuthContext";
+import { useAuth } from "@/lib/context/AuthContext";
 import { Play, Heart, MoreHorizontal, User } from "lucide-react";
 import Image from "next/image";
-import Header from "../../components/Header";
-import Footer from "../../components/Footer";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 import { useParams } from "next/navigation";
 
 const ArtistPage = () => {

@@ -1,6 +1,6 @@
 import { Play, Crown } from "lucide-react";
 import Image from "next/image";
-import { useAuth } from "../../contexts/AuthContext";
+import { useAuth } from "@/lib/context/AuthContext";
 
 interface HeroSectionProps {
   showMiniPlayer: boolean;

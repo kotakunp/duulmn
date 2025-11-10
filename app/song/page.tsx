@@ -1,13 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useAuth } from "../../contexts/AuthContext";
+import { useAuth } from "@/lib/context/AuthContext";
 import { Play, Search } from "lucide-react";
 import Image from "next/image";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
-import { fetchSongs } from "../../utils/api";
-import { ISong } from "../../types";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import { fetchSongs } from "@/utils/api";
+import { ISong } from "@/types";
 
 const SongIndexPage = () => {
   const [songs, setSongs] = useState<ISong[]>([]);

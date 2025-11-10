@@ -1,7 +1,7 @@
 'use client';
 
-import { AuthProvider } from '@/contexts/AuthContext';
-import { SongProvider } from '@/contexts/SongContext';
+import { AuthProvider } from '@/lib/context/AuthContext';
+import { SongProvider } from '@/lib/context/SongContext';
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
